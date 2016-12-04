@@ -6,12 +6,15 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label; 
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -34,6 +37,8 @@ public final class FileChooserClass extends Application{
         final TextField textField = new TextField();
         textField.setPrefWidth(800);
         final Button openButton = new Button("Open a File...");
+        final ObservableList<String> lines = FXCollections.observableArrayList("ERRORS:", "--------------");
+        final ListView<String> myList = new ListView<String>(lines);
        
         openButton.setOnAction(
             new EventHandler<ActionEvent>() {
@@ -41,9 +46,11 @@ public final class FileChooserClass extends Application{
                 public void handle(final ActionEvent e) {
                     File file = fileChooser.showOpenDialog(stage);
                     if (file != null) {
-                        //openFile(file);
+                        openFile(file);
                         textField.setText(file.getPath());
-                        DomMaker.childrenParse(file.getPath());
+                        String myString[] = DomMaker.childrenParse(file.getPath());
+                        lines.add(myString[0]);
+                        lines.add(myString[1]);
                     }
                 }
             });
@@ -53,10 +60,10 @@ public final class FileChooserClass extends Application{
         GridPane.setConstraints(label1, 0, 0);
         GridPane.setConstraints(textField, 0, 1);
         GridPane.setConstraints(openButton, 0, 2);
-
+        GridPane.setConstraints(myList,  0,  3);
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(6);
-        inputGridPane.getChildren().addAll(label1, textField, openButton);
+        inputGridPane.getChildren().addAll(label1, textField, openButton, myList);
  
         final Pane rootGroup = new VBox(12);
         rootGroup.getChildren().addAll(inputGridPane);

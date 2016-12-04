@@ -20,7 +20,7 @@ import org.jdom2.input.SAXBuilder;
 
 
 public final class CheckLogic {
-	
+	/*
 	  public  static int popup(String aString) {
 	        final JFrame parent = new JFrame();
 	        JButton button = new JButton();
@@ -37,29 +37,19 @@ public final class CheckLogic {
 	        parent.setLocation(x, y);
 	       
 	        return 0;
-	    }
+	    }*/
 	
-	public static void allChecks(Element root){
-		List list = root.getChildren();
-	
-		
-		/* Looping Test Proves We Can Pass myRoot	
-			for(Iterator iterator = list.iterator(); iterator.hasNext();){	
-				
-				Element myElement = (Element) iterator.next();
-				List <Element> grandchildren = myElement.getChildren();
-			
-				System.out.println("\n\n(IN CHECKLOGIC) subroot node : " + myElement.getName());
-			}	
-		*/	
-			check1(root);
-			return;
+	public static String [] allChecks(Element root){
+			String[] ret = new String[10];
+			ret[0] = check1(root);
+			ret[1] = check2(root);
+			return ret;
 		}
 		
 		
 		
-	//Check1: This check
-	public static int check1(Element myRoot){
+	//Check1: This check makes sure only one start, only one end state
+	public static String check1(Element myRoot){
 		List list = myRoot.getChildren(); 
 		ListIterator iterator = list.listIterator();
 		while(iterator.hasNext()){	
@@ -69,7 +59,6 @@ public final class CheckLogic {
 			}
 		}	
 		Element targetElement = (Element) iterator.previous();
-		System.out.println(targetElement.getName()); 
 		List <Element> grandchildren = targetElement.getChildren();
 		int startCount = 0; 
 		int endCount = 0; 
@@ -80,20 +69,56 @@ public final class CheckLogic {
 			if(myElement.getName() == "Start") startCount ++; 
 			if(myElement.getName() == "End") endCount++;
 		}	
-		System.out.println("startcount: " + startCount);
 		if (startCount != 1){
-			popup("Something is wrong with your start states") ;
-			return 0; 
+			return "ErrorCheck1: Something is wrong with your start states"; 
 		}
 		if (endCount != 1){
-			popup("Something is wrong with your end states");
+			return "ErrorCheck1: Something is wrong with your end states";
 		}
 		
-		return 0;
+		return "ErrorCheck1: Passed";
 	}
 	//Check2: This check
-	public static int check2(Element myRoot){
-		return 0;
+	public static String check2(Element myRoot){{
+			List list = myRoot.getChildren(); 
+			ListIterator iterator = list.listIterator();
+			while(iterator.hasNext()){	
+				Element myElement = (Element) iterator.next();
+				if(myElement.getName() == "allflows"){
+					break; 
+				}
+			}	
+			Element targetElement = (Element) iterator.previous();
+			List <Element> grandchildren = targetElement.getChildren();
+			Iterator anIterator = grandchildren.iterator();
+			String [] origin = new String[grandchildren.size()];
+			String [] dest = new String[grandchildren.size()];
+			int count = 0; 
+			while(anIterator.hasNext()){	
+				Element myElement = (Element) anIterator.next();
+				System.out.println(myElement.getName());
+				origin[count] = myElement.getChildText("origin");
+				dest[count] = myElement.getChildText("dest");
+				count++; 
+			}	
+			Iterator tempIterator = grandchildren.iterator(); 
+			boolean duplicateFlag = false; 
+			for(int i = 0; i<grandchildren.size(); i++){
+				for(int j = i+1; j<grandchildren.size(); j++){ 
+					System.out.println(origin[i] + "," + origin[j]);
+					System.out.println("-----");
+					if(origin[i].equals(origin[j])){
+						System.out.println("Match");
+						if(dest[i].equals(dest[j])){
+							duplicateFlag = true;
+							System.out.println("origin[i]" + origin[i] + "dest[i]" + dest[i] + "origin[j]" + origin[j] + "dest[j]" + dest[j]);
+						}
+					}
+			}
+			}
+		if(duplicateFlag == true) return "ErrorCheck2: A connection is duplicated in file";
+		else return "ErrorCheck2: Passed";
+	}
 	}//Check3: This check
 	public static int check3(Element myRoot){
 		return 0;

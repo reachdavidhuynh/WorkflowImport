@@ -14,7 +14,7 @@ public class DomMaker {
 
 	}
 	
-	public static void childrenParse(String fileName){
+	public static String[] childrenParse(String fileName){
 		  SAXBuilder builder = new SAXBuilder();
 		  File file = new File(fileName);
 		  try {
@@ -64,13 +64,17 @@ public class DomMaker {
 		    }
 		  
 			//Here is where you should call checks
-			CheckLogic.allChecks(rootNode);	
-				
+			String[] newString= CheckLogic.allChecks(rootNode);	
+			return newString;	
 			
 		  } catch (IOException io) {
 			System.out.println(io.getMessage());
+			String[] newString;
+			return newString = new String[100]; 
 		  } catch (JDOMException jdomex) {
 			System.out.println(jdomex.getMessage());
+			String[] newString;
+			return newString = new String[100]; 
 		  }
 	}
 }
