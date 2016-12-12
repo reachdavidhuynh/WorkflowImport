@@ -20,29 +20,13 @@ import org.jdom2.input.SAXBuilder;
 
 
 public final class CheckLogic {
-	/*
-	  public  static int popup(String aString) {
-	        final JFrame parent = new JFrame();
-	        JButton button = new JButton();
-	        button.setText(aString);
-	        parent.add(button);
-	        parent.pack();
-	        parent.setVisible(true);
-	        parent.setLocationRelativeTo(null);
-	        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-	        int w = parent.getSize().width;
-	        int h = parent.getSize().height;
-	        int x = (dim.width-w)/2;
-	        int y = (dim.height-h)/2;
-	        parent.setLocation(x, y);
-	       
-	        return 0;
-	    }*/
 	
 	public static String [] allChecks(Element root){
 			String[] ret = new String[10];
 			ret[0] = check1(root);
 			ret[1] = check2(root);
+			ret[2] = check3(root);
+			ret[3] = check4(root);
 			return ret;
 		}
 		
@@ -69,16 +53,16 @@ public final class CheckLogic {
 			if(myElement.getName() == "Start") startCount ++; 
 			if(myElement.getName() == "End") endCount++;
 		}	
-		if (startCount != 1){
+		if (startCount != 0){
 			return "ErrorCheck1: Something is wrong with your start states"; 
 		}
-		if (endCount != 1){
+		if (endCount != 0){
 			return "ErrorCheck1: Something is wrong with your end states";
 		}
 		
 		return "ErrorCheck1: Passed";
 	}
-	//Check2: This check
+	//Check2: This check checks to see if a connection occurs that already exists
 	public static String check2(Element myRoot){{
 			List list = myRoot.getChildren(); 
 			ListIterator iterator = list.listIterator();
@@ -119,13 +103,76 @@ public final class CheckLogic {
 		if(duplicateFlag == true) return "ErrorCheck2: A connection is duplicated in file";
 		else return "ErrorCheck2: Passed";
 	}
-	}//Check3: This check
-	public static int check3(Element myRoot){
-		return 0;
-	}//Check4: This check
-	public static int check4(Element myRoot){
-		return 0;
-	}//Check5: This check
+	}
+	
+	
+	//Check3: This check checks to see if an identifier is used twice 
+	public static String check3(Element myRoot){
+		List list = myRoot.getChildren(); 
+		ListIterator iterator = list.listIterator();
+		while(iterator.hasNext()){	
+			Element myElement = (Element) iterator.next();
+			System.out.println("subroot: " + myElement.getName());
+			List <Element> grandchildren = myElement.getChildren();
+			Iterator anIterator = grandchildren.iterator();
+			String [] ids = new String[grandchildren.size()];
+			int count = 0; 
+			while(anIterator.hasNext()){	
+				Element anElement = (Element) anIterator.next();
+				ids[count] = anElement.getChildText("id");
+				count++; 
+			}	
+			Iterator tempIterator = grandchildren.iterator(); 
+			boolean duplicateFlag = false; 
+			for(int i = 0; i<grandchildren.size(); i++){
+				for(int j = i+1; j<grandchildren.size(); j++){ 
+					if(ids[i].equals(ids[j])){
+							duplicateFlag = true;
+							return "ErrorCheck3: an id is used twice in " + myElement.getName();
+					}		
+				}
+			}
+	}
+		 return "ErrorCheck3: Passed";
+}
+	
+	
+	//********************Not done yet
+	//Check4: This check checks to see if there are any name repeats 
+	public static String check4(Element myRoot){
+		List list = myRoot.getChildren(); 
+		ListIterator iterator = list.listIterator();
+		while(iterator.hasNext()){	
+			Element myElement = (Element) iterator.next();
+			List <Element> grandchildren = myElement.getChildren();
+			Iterator anIterator = grandchildren.iterator();
+			String [] names = new String[grandchildren.size()];
+			int count = 0; 
+			if(myElement.getName() != "allflows")
+			while(anIterator.hasNext()){	
+				Element anElement = (Element) anIterator.next();
+				System.out.println(anElement.getName());
+				names[count] = anElement.getChildText("name");
+				System.out.println(names[count]);
+				count++; 
+			}	
+			Iterator tempIterator = grandchildren.iterator(); 
+			boolean duplicateFlag = false; 
+			for(int i = 0; i<count; i++){
+				for(int j = i+1; j<grandchildren.size(); j++){
+					System.out.println(names[i]);
+					System.out.println(names[j]);
+					if(names[i].equals(names[j])){
+							duplicateFlag = true;
+							return "ErrorCheck4: a name is used twice in " + myElement.getName();
+					}		
+				}
+			}
+	}
+		 return "ErrorCheck4: Passed";	
+}
+	
+	//Check5: This check
 	public static int check5(Element myRoot){
 		return 0;
 	}//Check6: This check
