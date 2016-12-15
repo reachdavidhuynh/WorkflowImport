@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<workflow>
+	<users>
+		<usertype>
+			<id>U1</id>
+			<name>Manager</name></usertype>
+		<usertype>
+			<id>U2</id>
+			<name>Employee1</name></usertype>
+		<usertype>
+			<id>U3</id>
+			<name>Employee2</name></usertype>
+	</users>
+
+
+<allstates>
+		<state>
+			<id>S1</id>
+            <name>Start</name>
+            <statetype>Linear</statetype>
+			<type>Student</type>
+			<form>F1</form>
+		</state>
+		<state>
+			<id>S2</id>
+            <name>Sendform1</name>
+            <statetype>Branching</statetype>
+			<type>Manager</type>
+			<form>F1</form>
+           </state>
+		<state>
+			<id>S3</id>
+            <name>Signfirst</name>
+            <statetype>Merge</statetype>
+			<type>Employee1</type>
+			<form>F2</form>
+			<pairstate>S4</pairstate>
+		</state>
+		<state>
+			<id>S4</id>
+            <name>Signsecond</name>
+            <statetype>Merge</statetype>
+			<type>Employee2</type>
+			<form>F3</form>
+			<pairstate>S3</pairstate>
+		</state>
+		<state>
+			<id>S5</id>
+            <name>ReceiveForms</name>
+            <statetype>Linear</statetype>
+			<type>Manager</type>
+		</state>
+
+		
+
+ </allstates>
+
+<allflows>
+            <flowevent>
+                <id>E1</id>
+                <origin>S1</origin>
+                <dest>S2</dest>
+              </flowevent>
+            <flowevent>
+                <id>E2</id>
+                <origin>S2</origin>
+                <dest>S3</dest>
+              </flowevent>
+            <flowevent>
+                <id>E3</id>
+                <origin>S2</origin>
+                <dest>S4</dest>
+               </flowevent>
+            <flowevent>
+                <id>E4</id>
+                <origin>S3</origin>
+                <dest>S5</dest>
+               </flowevent>
+            <flowevent>
+                <id>E5</id>
+                <origin>S4</origin>
+                <dest>S5</dest>
+               </flowevent>
+            <flowevent>
+                <id>E6</id>
+                <origin>S5</origin>
+                <dest>S6</dest>
+              </flowevent>
+    </allflows>
+
+
+ <allforms>
+        <form>
+            <id>F1</id>
+            <name>ManagerRequest</name>
+            <state>S2</state>
+            <formfield>StudentName</formfield>
+			<formfield>StudentID</formfield>
+        </form>
+        <form>
+            <id>F2</id>
+            <name>Employee1sign</name>
+            <state>S3</state>
+            <formfield>Signature1</formfield>
+        </form>
+        <form>
+            <id>F3</id>
+            <name>Employee2sign</name>
+            <state>S4</state>
+            <formfield>Signature2</formfield>
+        </form>
+    </allforms>
+
+
+   <codesnippets>
+    	<snippet>
+    	    <method>someMethod</method>
+       		 <packagename>somePackage</packagename>
+        	<classname>someClass</classname>
+            <stateid>S5</stateid>
+    	</snippet>
+    </codesnippets>
+
+</workflow>
