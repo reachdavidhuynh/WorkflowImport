@@ -40,9 +40,13 @@ public final class FileChooserClass extends Application{
         final Label label1 = new Label("File:");
         final TextField textField = new TextField();
         textField.setPrefWidth(800);
-        final Button openButton = new Button("Select a File...");
+        final Button openButton = new Button("Select an XML File...");
         final Button anotherbutton = new Button("Open a File...");
-        final Button savebutton = new Button("Save File to use ...");
+        final Button savebutton = new Button("Save XML File to use ...");
+        final TextField textField2 = new TextField(); 
+        textField2.setPrefWidth(800);
+        final Button selectButton = new Button ("Select a Class File...");
+        final Button saveButton2 = new Button ("Save a Class File to use ...");
         final ObservableList<String> lines = FXCollections.observableArrayList("ERRORS:", "--------------");
         final ListView<String> myList = new ListView<String>(lines);
         
@@ -93,7 +97,51 @@ public final class FileChooserClass extends Application{
                     		  dir.mkdir();
                     		  String path = workingDir + File.separator + "XML Uploads" + File.separator;
                     		  File dest = null;
-                    		  dest = new File(path + "savedFile.xml");
+                    		  dest = new File(path + "savedXML.xml");
+                    		  try{
+                    		     bool = dest.createNewFile();
+								copyFiles(anfile, dest);
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							} 
+                        }
+                    }
+                });
+
+        
+        selectButton.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(final ActionEvent e) {
+                        File file = fileChooser.showOpenDialog(stage);
+                        if (file != null) {
+                            //openFile(file);
+                            textField2.setText(file.getPath());
+                        }
+                    }
+                });
+        
+        saveButton2.setOnAction(
+                new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(final ActionEvent e)  {
+                    	File anfile = null;
+                    	if(textField2.getText()!= "" || textField2.getText() != null){
+                    		 anfile = new File(textField2.getText());
+                    	}
+                    		else{
+                    			System.out.println("No file chosen");
+                    			return; 
+                    		}
+                    	if (anfile != null) {
+                    		  boolean bool = false; 
+                    		  String workingDir = System.getProperty("user.dir");
+                    		  File dir = new File("Class Uploads");
+                    		  dir.mkdir();
+                    		  String path = workingDir + File.separator + "Class Uploads" + File.separator;
+                    		  File dest = null;
+                    		  dest = new File(path + "savedClass.java");
                     		  try{
                     		     bool = dest.createNewFile();
 								copyFiles(anfile, dest);
@@ -113,10 +161,13 @@ public final class FileChooserClass extends Application{
         GridPane.setConstraints(openButton, 0, 2);
         GridPane.setConstraints(anotherbutton,  0,3); 
         GridPane.setConstraints(savebutton, 0, 4); 
-        GridPane.setConstraints(myList,  0,  5);
+        GridPane.setConstraints(textField2,  0,  5);
+        GridPane.setConstraints(selectButton,  0,  6);
+        GridPane.setConstraints(saveButton2, 0, 7);
+        GridPane.setConstraints(myList,  0,  8);
         inputGridPane.setHgap(6);
         inputGridPane.setVgap(6);
-        inputGridPane.getChildren().addAll(label1, textField, openButton, savebutton, myList);
+        inputGridPane.getChildren().addAll(label1, textField, openButton, savebutton, textField2, selectButton, saveButton2, myList);
  
         final Pane rootGroup = new VBox(12);
         rootGroup.getChildren().addAll(inputGridPane);
